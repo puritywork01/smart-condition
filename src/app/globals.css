@@ -106,3 +106,18 @@ button:active {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
+
+@media print {
+  @page {
+    margin: 0;
+    size: A4 portrait;
+  }
+  
+  body, html {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

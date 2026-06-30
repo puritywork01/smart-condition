@@ -1,0 +1,159 @@
+.pdfContainer {
+  width: 210mm; /* A4 width */
+  min-height: 297mm; /* A4 height */
+  padding: 10mm;
+  background: white;
+  color: black;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  box-sizing: border-box;
+}
+
+.pdfTitle {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 10px;
+}
+
+.companyName {
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: -15px;
+}
+
+.headerInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.boldBlue {
+  color: blue;
+  font-weight: bold;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  border: 2px solid black;
+}
+
+.dataTable th, .dataTable td {
+  border: 1px solid black;
+  padding: 2px 4px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.dataTable .label {
+  font-size: 9px;
+  background-color: transparent;
+  white-space: nowrap;
+}
+
+.dataTable .labelWrap {
+  font-size: 9px;
+  background-color: transparent;
+  min-width: 50px;
+}
+
+.dataTable .value {
+  color: blue;
+  font-weight: bold;
+  text-align: center;
+  width: auto;
+}
+
+.sectionTitle {
+  font-size: 10px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.thickBorder {
+  border: 2px solid black !important;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.subTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.subTable th, .subTable td {
+  border: 1px solid black;
+  padding: 2px;
+  text-align: center;
+  font-size: 9px;
+}
+
+.subTable th {
+  background-color: #f0f0f0;
+}
+
+.diagramBox {
+  border: 2px solid black;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.diagramInner {
+  border: 1px solid black;
+  width: 80%;
+  height: 80%;
+  position: relative;
+}
+
+.circle {
+  width: 8px;
+  height: 8px;
+  border: 1px solid black;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.circle.tl { top: -4px; left: -4px; }
+.circle.tr { top: -4px; right: -4px; }
+.circle.bl { bottom: -4px; left: -4px; }
+.circle.br { bottom: -4px; right: -4px; }
+
+.signatures {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.signatureBox {
+  border: 1px solid black;
+  width: 100px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.signatureTitle {
+  border-bottom: 1px solid black;
+  text-align: center;
+  font-size: 8px;
+  padding: 2px;
+}

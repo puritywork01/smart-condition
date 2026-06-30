@@ -1,0 +1,190 @@
+.container {
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.formGrid {
+  width: 100%;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .formGrid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.card {
+  background-color: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.inputGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--secondary-hover);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input {
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: 0.95rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.unitButtonsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.unitBtn {
+  width: 100%;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--primary);
+  background-color: rgba(37, 99, 235, 0.05);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.unitBtn:hover {
+  background-color: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btnSave {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  color: white;
+  background-color: var(--success);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnSave:hover {
+  background-color: #059669; /* darker success */
+}
+
+.btnSaveMaster {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  color: white;
+  background-color: var(--primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnSaveMaster:hover {
+  background-color: var(--primary-hover);
+}
+
+.btnBack {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  color: var(--foreground);
+  background-color: var(--secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnBack:hover {
+  background-color: var(--secondary-hover);
+}
+
+/* --- Print Styles for Vector PDF Export --- */
+.printOnly {
+  display: none;
+}
+
+@media print {
+  /* Hide all normal UI elements during print */
+  .noPrint {
+    display: none !important;
+  }
+  
+  /* Show only the PDF component */
+  .printOnly {
+    display: block !important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+}

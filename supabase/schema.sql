@@ -1,5 +1,10 @@
--- Create enum for condition type
-CREATE TYPE condition_type AS ENUM ('Master', 'Mass Production');
+-- Create enum safely
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'condition_type') THEN
+        CREATE TYPE condition_type AS ENUM ('Master', 'Mass Production');
+    END IF;
+END $$;
 
 -- 1. Main Table (Header details)
 CREATE TABLE IF NOT EXISTS condition_records (
@@ -76,7 +81,7 @@ CREATE TABLE IF NOT EXISTS temperature_units (
     nozzle NUMERIC,
     zone1 NUMERIC, zone2 NUMERIC, zone3 NUMERIC, zone4 NUMERIC,
     zone5 NUMERIC, zone6 NUMERIC, zone7 NUMERIC, zone8 NUMERIC,
-    -- Hot Runner (Can use zone1 to zone8 or additional fields if needed, simplifying to one hot runner or 8 zones)
+    -- Hot Runner
     hr_zone1 NUMERIC, hr_zone2 NUMERIC, hr_zone3 NUMERIC, hr_zone4 NUMERIC,
     hr_zone5 NUMERIC, hr_zone6 NUMERIC, hr_zone7 NUMERIC, hr_zone8 NUMERIC
 );
@@ -92,9 +97,26 @@ CREATE TABLE IF NOT EXISTS cooling_units (
     cooling_time NUMERIC
 );
 
--- Disable RLS for now for easier development (can enable later)
-ALTER TABLE condition_records DISABLE ROW LEVEL SECURITY;
-ALTER TABLE clamping_units DISABLE ROW LEVEL SECURITY;
-ALTER TABLE injection_units DISABLE ROW LEVEL SECURITY;
-ALTER TABLE temperature_units DISABLE ROW LEVEL SECURITY;
-ALTER TABLE cooling_units DISABLE ROW LEVEL SECURITY;
+-- Enable RLS so we can attach policies
+ALTER TABLE condition_records ENABLE ROW LEVEL SECURITY;
+ALTER TABLE clamping_units ENABLE ROW LEVEL SECURITY;
+ALTER TABLE injection_units ENABLE ROW LEVEL SECURITY;
+ALTER TABLE temperature_units ENABLE ROW LEVEL SECURITY;
+ALTER TABLE cooling_units ENABLE ROW LEVEL SECURITY;
+
+-- Create policies to allow all operations (Insert/Select/Update/Delete) for testing/internal use
+DO $$ 
+BEGIN
+    -- Drop existing policies if they exist to avoid errors when re-running
+    DROP POLICY IF EXISTS "Enable all operations" ON condition_records;
+    DROP POLICY IF EXISTS "Enable all operations" ON clamping_units;
+    DROP POLICY IF EXISTS "Enable all operations" ON injection_units;
+    DROP POLICY IF EXISTS "Enable all operations" ON temperature_units;
+    DROP POLICY IF EXISTS "Enable all operations" ON cooling_units;
+    
+    CREATE POLICY "Enable all operations" ON condition_records FOR ALL USING (true) WITH CHECK (true);
+    CREATE POLICY "Enable all operations" ON clamping_units FOR ALL USING (true) WITH CHECK (true);
+    CREATE POLICY "Enable all operations" ON injection_units FOR ALL USING (true) WITH CHECK (true);
+    CREATE POLICY "Enable all operations" ON temperature_units FOR ALL USING (true) WITH CHECK (true);
+    CREATE POLICY "Enable all operations" ON cooling_units FOR ALL USING (true) WITH CHECK (true);
+END $$;
