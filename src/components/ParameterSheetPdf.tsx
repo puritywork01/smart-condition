@@ -77,8 +77,8 @@ const HCell = ({ w = 1, bg, children }: CellProps) => (
 const UCell = ({ w = 1, children }: CellProps) => (
   <Cell w={w}><Text style={s.unit}>{children ?? ''}</Text></Cell>
 );
-const Row = ({ children, bg }: { children: any; bg?: string }) => (
-  <View style={[s.row, bg ? { backgroundColor: bg } : {}]}>{children}</View>
+const Row = ({ children, bg, style }: { children: any; bg?: string; style?: any }) => (
+  <View style={[s.row, bg ? { backgroundColor: bg } : {}, style]}>{children}</View>
 );
 const Tbl = ({ children, style }: { children: any; style?: any }) => (
   <View style={[s.tbl, s.tblThick, style]}>{children}</View>
