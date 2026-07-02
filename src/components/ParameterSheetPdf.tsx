@@ -109,6 +109,7 @@ const ParameterSheetPdf: React.FC<Props> = ({ data, clamping, injection, tempera
     color1:     data?.color1     ?? data?.colorNo     ?? data?.color_no ?? '',
     color2:     data?.color2     ?? '',
     color3:     data?.color3     ?? '',
+    type:       data?.type       ?? 'Mass Production',
   };
   const totalWeight = ((parseFloat(d.part_weight || '0') + parseFloat(d.rn_weight || '0')).toFixed(2));
 
@@ -164,6 +165,22 @@ const ParameterSheetPdf: React.FC<Props> = ({ data, clamping, injection, tempera
           </Row>
         </Tbl>
 
+        {/* ═══ STATUS ═════════════════════════════════════════════════════ */}
+        <View style={{ marginTop: 2, marginBottom: 2 }}>
+          <Text style={{ fontSize: F.xs, fontWeight: 'bold' }}>STATUS</Text>
+          <View style={{ flexDirection: 'row', border: '1px solid black', padding: 2, alignItems: 'center' }}>
+            <View style={{ border: '1px solid black', width: 10, height: 10, marginLeft: 2, marginRight: 4, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'red', fontSize: 8 }}>{d.type === 'Mass Production' ? '✓' : ''}</Text>
+            </View>
+            <Text style={{ fontSize: F.sm, marginRight: 20 }}>STD.MASSPROD.</Text>
+            
+            <View style={{ border: '1px solid black', width: 10, height: 10, marginRight: 4, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'red', fontSize: 8 }}>{d.type === 'Master' ? '✓' : ''}</Text>
+            </View>
+            <Text style={{ fontSize: F.sm }}>TRIAL...................</Text>
+          </View>
+        </View>
+
         {/* ═══ MACHINE / CYCLE / WEIGHT ════════════════════════════════ */}
         <View style={{ flexDirection: 'row', gap: 4, marginTop: 5 }}>
           {/* Machine */}
@@ -198,7 +215,7 @@ const ParameterSheetPdf: React.FC<Props> = ({ data, clamping, injection, tempera
               <Row><LCell w={4}>PRODUCT 2</LCell><VCell w={2}>-</VCell><UCell w={1}>g</UCell><LCell w={4}>PRODUCT 4</LCell><VCell w={2}>-</VCell><UCell w={1}>g</UCell></Row>
               <Row><LCell w={4}>PRODUCT 5</LCell><VCell w={2}>-</VCell><UCell w={1}>g</UCell><LCell w={4}>PRODUCT 7</LCell><VCell w={2}>-</VCell><UCell w={1}>g</UCell></Row>
               <Row><LCell w={4}>PRODUCT 6</LCell><VCell w={2}>-</VCell><UCell w={1}>g</UCell><LCell w={4}>PRODUCT 8</LCell><VCell w={2}>-</VCell><UCell w={1}>g</UCell></Row>
-              <Row><LCell w={4}>RUNNER</LCell><VCell w={2}>{d.rn_weight}</VCell><UCell w={1}>g</UCell><LCell w={4}>PRODUCT 9</LCell><VCell w={2}>-</VCell><UCell w={1}>g</UCell></Row>
+              <Row><LCell w={4}>PRODUCT 9</LCell><VCell w={2}>-</VCell><UCell w={1}>g</UCell><LCell w={4}>PRODUCT 10</LCell><VCell w={2}>-</VCell><UCell w={1}>g</UCell></Row>
               <Row><LCell w={4}>RUNNER</LCell><VCell w={2}>{d.rn_weight}</VCell><UCell w={1}>g</UCell><LCell w={4}>TOTAL(SHOT)</LCell><VCell w={2}>{totalWeight}</VCell><UCell w={1}>g</UCell></Row>
             </Tbl>
           </View>
