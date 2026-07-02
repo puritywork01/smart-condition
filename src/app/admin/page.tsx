@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { fetchUsers, updateUserPermissions, createUser, updateUserPassword } from "@/lib/services/authService";
-import { Users, Shield, Plus, ArrowLeft, Settings, X, Key } from "lucide-react";
+import { fetchUsers, updateUserPermissions, createUser, updateUserPassword, updateUserRole } from "@/lib/services/authService";
+import { Users, Shield, Plus, ArrowLeft, Settings, X, Key, UserCog } from "lucide-react";
 import Link from "next/link";
 import styles from "./page.module.css";
 
@@ -64,6 +64,21 @@ export default function AdminPage() {
       if (selectedUser && selectedUser.id === userId) {
         setSelectedUser({ ...selectedUser, permissions: newPerms });
       }
+    }
+  };
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    // Update local state
+    setUsersList(usersList.map(u => u.id === userId ? { ...u, role: newRole } : u));
+    if (selectedUser && selectedUser.id === userId) {
+      setSelectedUser({ ...selectedUser, role: newRole });
+    }
+
+    // Save to DB
+    const res = await updateUserRole(userId, newRole);
+    if (!res.success) {
+      alert("Failed to update role: " + res.error);
+      loadUsers(); // revert
     }
   };
 
@@ -214,9 +229,18 @@ export default function AdminPage() {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
               จัดการบัญชี: {selectedUser.username}
             </h2>
-            <p style={{ color: '#6b7280', marginBottom: '1.5rem', fontSize: '0.875rem' }}>
-              ระดับสิทธิ์ปัจจุบัน: <strong style={{ color: 'var(--foreground)' }}>{selectedUser.role}</strong>
-            </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+              <span style={{ color: '#6b7280', fontSize: '0.875rem' }}>ระดับสิทธิ์ปัจจุบัน:</span>
+              <select 
+                value={selectedUser.role}
+                onChange={(e) => handleRoleChange(selectedUser.id, e.target.value)}
+                style={{ padding: '0.25rem 0.5rem', borderRadius: '4px', border: '1px solid #d1d5db', fontSize: '0.875rem', fontWeight: 'bold', backgroundColor: 'var(--background)', color: 'var(--foreground)' }}
+              >
+                <option value="Technician">ช่างใช้งาน (Technician)</option>
+                <option value="Manager">ผู้จัดการ (Manager)</option>
+                <option value="Admin">แอดมิน (Admin)</option>
+              </select>
+            </div>
 
             <div style={{ marginBottom: '2rem' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>
@@ -250,8 +274,12 @@ export default function AdminPage() {
 
             <div>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Key size={18} /> เปลี่ยนรหัสผ่านใหม่
+                <Key size={18} /> รหัสผ่าน (Password)
               </h3>
+              <div style={{ marginBottom: '1rem', padding: '0.75rem', backgroundColor: '#f9fafb', borderRadius: '6px', border: '1px solid #e5e7eb' }}>
+                <span style={{ color: '#6b7280', fontSize: '0.875rem', marginRight: '0.5rem' }}>รหัสผ่านปัจจุบัน:</span>
+                <strong style={{ fontFamily: 'monospace', fontSize: '1rem' }}>{selectedUser.password}</strong>
+              </div>
               <form onSubmit={handleChangePassword} style={{ display: 'flex', gap: '0.5rem' }}>
                 <input 
                   type="text" 

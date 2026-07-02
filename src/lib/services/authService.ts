@@ -31,7 +31,7 @@ export async function fetchUsers(): Promise<{ success: boolean; users?: any[]; e
   try {
     const { data, error } = await supabase
       .from("app_users")
-      .select("id, username, role, permissions, created_at")
+      .select("id, username, password, role, permissions, created_at")
       .order("created_at", { ascending: false });
 
     if (error) throw new Error(error.message);
@@ -46,6 +46,20 @@ export async function updateUserPermissions(id: string, permissions: string[]): 
     const { error } = await supabase
       .from("app_users")
       .update({ permissions })
+      .eq("id", id);
+
+    if (error) throw new Error(error.message);
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function updateUserRole(id: string, role: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase
+      .from("app_users")
+      .update({ role })
       .eq("id", id);
 
     if (error) throw new Error(error.message);
