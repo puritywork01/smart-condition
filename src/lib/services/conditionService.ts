@@ -20,10 +20,14 @@ export async function saveCondition(payload: any) {
         rn_weight: header.rnWeight ? parseFloat(header.rnWeight) : null,
         cycle_time: header.cycleTime ? parseFloat(header.cycleTime) : null,
         matl1: header.matl1,
+        grade1: header.grade1,
+        color1: header.color1,
         matl2: header.matl2,
+        grade2: header.grade2,
+        color2: header.color2,
         matl3: header.matl3,
-        grade: header.grade,
-        color_no: header.colorNo,
+        grade3: header.grade3,
+        color3: header.color3,
       })
       .select()
       .single();

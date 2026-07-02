@@ -102,8 +102,13 @@ const ParameterSheetPdf: React.FC<Props> = ({ data, clamping, injection, tempera
     cycle_time: data?.cycleTime  ?? data?.cycle_time  ?? '',
     matl1:      data?.matl1      ?? '',
     matl2:      data?.matl2      ?? '',
-    grade:      data?.grade      ?? '',
-    color_no:   data?.colorNo    ?? data?.color_no    ?? '',
+    matl3:      data?.matl3      ?? '',
+    grade1:     data?.grade1     ?? data?.grade       ?? '',
+    grade2:     data?.grade2     ?? '',
+    grade3:     data?.grade3     ?? '',
+    color1:     data?.color1     ?? data?.colorNo     ?? data?.color_no ?? '',
+    color2:     data?.color2     ?? '',
+    color3:     data?.color3     ?? '',
   };
   const totalWeight = ((parseFloat(d.part_weight || '0') + parseFloat(d.rn_weight || '0')).toFixed(2));
 
@@ -130,22 +135,32 @@ const ParameterSheetPdf: React.FC<Props> = ({ data, clamping, injection, tempera
           <Row>
             <LCell w={7}>PART NAME</LCell>
             <VCell w={20}>{d.part_name}</VCell>
-            <LCell w={7}>MATERIAL 1</LCell>
-            <VCell w={12}>{d.matl1}</VCell>
-            <LCell w={7}>MATERIAL 2</LCell>
-            <VCell w={5}>{d.matl2}</VCell>
-            <LCell w={5}>COLOR</LCell>
-            <VCell w={5}>{d.color_no}</VCell>
+            <LCell w={5}>MAT'L 1</LCell>
+            <VCell w={9}>{d.matl1}</VCell>
+            <LCell w={5}>MAT'L 2</LCell>
+            <VCell w={9}>{d.matl2}</VCell>
+            <LCell w={5}>MAT'L 3</LCell>
+            <VCell w={9}>{d.matl3}</VCell>
           </Row>
           <Row>
             <LCell w={7}>PART CODE</LCell>
             <VCell w={20}>{d.part_code}</VCell>
-            <LCell w={7}>GRADE</LCell>
-            <VCell w={12}>{d.grade}</VCell>
-            <LCell w={7}>GRADE</LCell>
-            <VCell w={5}>-</VCell>
-            <LCell w={5}>CP.No</LCell>
-            <VCell w={5}>-</VCell>
+            <LCell w={5}>GRADE</LCell>
+            <VCell w={9}>{d.grade1}</VCell>
+            <LCell w={5}>GRADE</LCell>
+            <VCell w={9}>{d.grade2}</VCell>
+            <LCell w={5}>GRADE</LCell>
+            <VCell w={9}>{d.grade3}</VCell>
+          </Row>
+          <Row>
+            <LCell w={7}>M/C TON</LCell>
+            <VCell w={20}>{d.mc_ton}</VCell>
+            <LCell w={5}>COLOR</LCell>
+            <VCell w={9}>{d.color1}</VCell>
+            <LCell w={5}>COLOR</LCell>
+            <VCell w={9}>{d.color2}</VCell>
+            <LCell w={5}>COLOR</LCell>
+            <VCell w={9}>{d.color3}</VCell>
           </Row>
         </Tbl>
 

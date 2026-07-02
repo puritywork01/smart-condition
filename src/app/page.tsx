@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ClipboardList, FileEdit, LineChart, FileText, LogOut, Shield } from "lucide-react";
+import { ClipboardList, FileEdit, LineChart, FileText, LogOut, Shield, Database } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import styles from "./page.module.css";
 
@@ -72,6 +72,16 @@ export default function Home() {
             </div>
             <h2 className={styles.cardTitle}>วิเคราะห์ Condition</h2>
             <p className={styles.cardDesc}>Analyze and compare with master</p>
+          </Link>
+        )}
+
+        {(user?.role === "Admin" || user?.role === "Manager") && (
+          <Link href="/parts" className={`card ${styles.menuCard}`}>
+            <div className={`${styles.iconWrapper}`} style={{ backgroundColor: '#f3e8ff', color: '#9333ea' }}>
+              <Database size={32} />
+            </div>
+            <h2 className={styles.cardTitle}>ฐานข้อมูลชิ้นงาน</h2>
+            <p className={styles.cardDesc}>Manage part master data</p>
           </Link>
         )}
       </div>

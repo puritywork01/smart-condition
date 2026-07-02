@@ -3,10 +3,11 @@
 import { useEffect, useState, use, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, ChevronRight, CheckCircle2, FileDown } from "lucide-react";
+import { ArrowLeft, Save, ChevronRight, CheckCircle2, FileDown, Search } from "lucide-react";
 import { pdf } from '@react-pdf/renderer';
 import styles from "./page.module.css";
 import { saveCondition, getConditionById } from "@/lib/services/conditionService";
+import { getPartByIdCode } from "@/lib/services/partService";
 import { supabase } from "@/lib/supabase";
 
 import ClampingUnitModal from "@/components/ClampingUnitModal";
@@ -33,10 +34,14 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
     rnWeight: "",
     cycleTime: "",
     matl1: "",
+    grade1: "",
+    color1: "",
     matl2: "",
+    grade2: "",
+    color2: "",
     matl3: "",
-    grade: "",
-    colorNo: ""
+    grade3: "",
+    color3: ""
   });
 
   // States for sub-units (simplified to avoid huge boilerplate, using any for now)
@@ -70,10 +75,14 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
           rnWeight: d.rn_weight?.toString() || "",
           cycleTime: d.cycle_time?.toString() || "",
           matl1: d.matl1 || "",
+          grade1: d.grade1 || "",
+          color1: d.color1 || "",
           matl2: d.matl2 || "",
+          grade2: d.grade2 || "",
+          color2: d.color2 || "",
           matl3: d.matl3 || "",
-          grade: d.grade || "",
-          colorNo: d.color_no || ""
+          grade3: d.grade3 || "",
+          color3: d.color3 || ""
         });
         
         const extractData = (rel: any) => {
@@ -97,6 +106,39 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSearchPart = async () => {
+    if (!formData.idCode) {
+      alert("กรุณากรอก ID Code ก่อนค้นหา");
+      return;
+    }
+    setIsLoading(true);
+    const res = await getPartByIdCode(formData.idCode);
+    if (res.success && res.data) {
+      const p = res.data;
+      setFormData(prev => ({
+        ...prev,
+        partCode: p.part_code || "",
+        partName: p.part_name || "",
+        matl1: p.matl1 || "",
+        grade1: p.grade1 || "",
+        color1: p.color1 || "",
+        matl2: p.matl2 || "",
+        grade2: p.grade2 || "",
+        color2: p.color2 || "",
+        matl3: p.matl3 || "",
+        grade3: p.grade3 || "",
+        color3: p.color3 || "",
+        partWeight: p.part_weight?.toString() || prev.partWeight,
+        rnWeight: p.rn_weight?.toString() || prev.rnWeight,
+        cycleTime: p.cycle_time?.toString() || prev.cycleTime,
+        mcTon: p.mc_ton?.toString() || prev.mcTon,
+      }));
+    } else {
+      alert("ไม่พบข้อมูลชิ้นงาน (ID Code) นี้ในระบบ Part Master");
+    }
+    setIsLoading(false);
   };
 
   const handleSave = async (type: "Mass Production" | "Master") => {
@@ -194,7 +236,12 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
             </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>ID Code</label>
-              <input type="text" name="idCode" className={styles.input} value={formData.idCode} onChange={handleChange} />
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <input type="text" name="idCode" className={styles.input} style={{ flex: 1 }} value={formData.idCode} onChange={handleChange} />
+                <button type="button" onClick={handleSearchPart} style={{ padding: '0.5rem', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }} title="ดึงข้อมูลจาก Part Master">
+                  <Search size={18} />
+                </button>
+              </div>
             </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>M/C No.</label>
@@ -232,20 +279,38 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
               <input type="text" name="matl1" className={styles.input} value={formData.matl1} onChange={handleChange} />
             </div>
             <div className={styles.formGroup}>
+              <label className={styles.label}>Grade 1</label>
+              <input type="text" name="grade1" className={styles.input} value={formData.grade1} onChange={handleChange} />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Color 1</label>
+              <input type="text" name="color1" className={styles.input} value={formData.color1} onChange={handleChange} />
+            </div>
+
+            <div className={styles.formGroup}>
               <label className={styles.label}>MAT'L 2</label>
               <input type="text" name="matl2" className={styles.input} value={formData.matl2} onChange={handleChange} />
             </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Grade 2</label>
+              <input type="text" name="grade2" className={styles.input} value={formData.grade2} onChange={handleChange} />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Color 2</label>
+              <input type="text" name="color2" className={styles.input} value={formData.color2} onChange={handleChange} />
+            </div>
+
             <div className={styles.formGroup}>
               <label className={styles.label}>MAT'L 3</label>
               <input type="text" name="matl3" className={styles.input} value={formData.matl3} onChange={handleChange} />
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.label}>Grade</label>
-              <input type="text" name="grade" className={styles.input} value={formData.grade} onChange={handleChange} />
+              <label className={styles.label}>Grade 3</label>
+              <input type="text" name="grade3" className={styles.input} value={formData.grade3} onChange={handleChange} />
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.label}>Color No.</label>
-              <input type="text" name="colorNo" className={styles.input} value={formData.colorNo} onChange={handleChange} />
+              <label className={styles.label}>Color 3</label>
+              <input type="text" name="color3" className={styles.input} value={formData.color3} onChange={handleChange} />
             </div>
           </div>
         </div>

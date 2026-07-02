@@ -23,10 +23,14 @@ CREATE TABLE IF NOT EXISTS condition_records (
     rn_weight NUMERIC,
     cycle_time NUMERIC,
     matl1 TEXT,
+    grade1 TEXT,
+    color1 TEXT,
     matl2 TEXT,
+    grade2 TEXT,
+    color2 TEXT,
     matl3 TEXT,
-    grade TEXT,
-    color_no TEXT
+    grade3 TEXT,
+    color3 TEXT
 );
 
 -- 2. Clamping Unit
@@ -113,10 +117,12 @@ BEGIN
     DROP POLICY IF EXISTS "Enable all operations" ON injection_units;
     DROP POLICY IF EXISTS "Enable all operations" ON temperature_units;
     DROP POLICY IF EXISTS "Enable all operations" ON cooling_units;
+    DROP POLICY IF EXISTS "Allow all operations for authenticated users on part_master" ON part_master;
     
     CREATE POLICY "Enable all operations" ON condition_records FOR ALL USING (true) WITH CHECK (true);
     CREATE POLICY "Enable all operations" ON clamping_units FOR ALL USING (true) WITH CHECK (true);
     CREATE POLICY "Enable all operations" ON injection_units FOR ALL USING (true) WITH CHECK (true);
     CREATE POLICY "Enable all operations" ON temperature_units FOR ALL USING (true) WITH CHECK (true);
     CREATE POLICY "Enable all operations" ON cooling_units FOR ALL USING (true) WITH CHECK (true);
+    CREATE POLICY "Allow all operations for authenticated users on part_master" ON part_master FOR ALL USING (true) WITH CHECK (true);
 END $$;
