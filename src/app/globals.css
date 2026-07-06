@@ -22,6 +22,7 @@
   --card: #ffffff;
   --card-foreground: #0f172a;
   --border: #e2e8f0;
+  --muted-foreground: rgba(15, 23, 42, 0.7);
   
   --ring: rgba(37, 99, 235, 0.3);
   
@@ -49,6 +50,7 @@
     --card: #1e293b;
     --card-foreground: #f8fafc;
     --border: #334155;
+    --muted-foreground: rgba(248, 250, 252, 0.7);
   }
 }
 

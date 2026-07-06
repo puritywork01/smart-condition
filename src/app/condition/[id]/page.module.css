@@ -65,12 +65,13 @@
 .label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--secondary-hover);
+  color: var(--muted-foreground);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .input {
+  width: 100%;
   padding: 0.5rem 0.75rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);

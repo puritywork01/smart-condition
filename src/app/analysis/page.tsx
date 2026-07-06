@@ -6,6 +6,7 @@ import { ArrowLeft, LineChart, Save } from "lucide-react";
 import styles from "./page.module.css";
 import { fetchAnalysisData, saveNewMasterFromAnalysis } from "@/lib/services/analysisService";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 
 export default function AnalysisPage() {
   const { user, hasPermission } = useAuth();
@@ -14,6 +15,28 @@ export default function AnalysisPage() {
     startDate: "",
     endDate: "",
   });
+
+  const [masterSuggestions, setMasterSuggestions] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchMasterSuggestions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("condition_records")
+          .select("id_code")
+          .eq("type", "Master")
+          .order("id_code", { ascending: true });
+        
+        if (data) {
+          const uniqueCodes = Array.from(new Set(data.map(item => item.id_code).filter(Boolean)));
+          setMasterSuggestions(uniqueCodes);
+        }
+      } catch (err) {
+        console.error("Error fetching master suggestions:", err);
+      }
+    };
+    fetchMasterSuggestions();
+  }, []);
 
   // Guard for permission
   if (user && !hasPermission("analysis")) {
@@ -26,9 +49,9 @@ export default function AnalysisPage() {
     position: 10,
     time: 10,
     temperature: 10,
-    weight: 5,
-    backPressure: 2,
-    screwSpeed: 5
+    weight: 10,
+    backPressure: 10,
+    screwSpeed: 10
   });
 
   const [isAnalyzed, setIsAnalyzed] = useState(false);
@@ -103,12 +126,18 @@ export default function AnalysisPage() {
             <label className={styles.label}>ค้นหา Master (ID)</label>
             <input 
               type="text" 
+              list="masterIdSuggestions"
               className={styles.input} 
               placeholder="e.g. MAS-001"
               value={searchParams.masterId}
               onChange={e => setSearchParams({...searchParams, masterId: e.target.value})}
               required
             />
+            <datalist id="masterIdSuggestions">
+              {masterSuggestions.map((code) => (
+                <option key={code} value={code} />
+              ))}
+            </datalist>
           </div>
 
           <div className={styles.formGroup}>

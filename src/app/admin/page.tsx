@@ -89,6 +89,9 @@ export default function AdminPage() {
     const res = await updateUserPassword(selectedUser.id, editingPassword);
     if (res.success) {
       alert("เปลี่ยนรหัสผ่านสำเร็จ!");
+      // Update local state so current password indicator reflects the change immediately
+      setUsersList(usersList.map(u => u.id === selectedUser.id ? { ...u, password: editingPassword } : u));
+      setSelectedUser({ ...selectedUser, password: editingPassword });
       setEditingPassword("");
     } else {
       alert("เกิดข้อผิดพลาด: " + res.error);
@@ -240,11 +243,13 @@ export default function AdminPage() {
                 <option value="Manager">ผู้จัดการ (Manager)</option>
                 <option value="Admin">แอดมิน (Admin)</option>
               </select>
+              <span style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: '500', marginLeft: '0.5rem' }}>✓ บันทึกอัตโนมัติเมื่อเลือก</span>
             </div>
 
             <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>
-                กำหนดสิทธิ์การใช้งาน (Permissions)
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>กำหนดสิทธิ์การใช้งาน (Permissions)</span>
+                <span style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: 'normal' }}>✓ บันทึกอัตโนมัติเมื่อคลิก</span>
               </h3>
               {selectedUser.role === "Admin" ? (
                 <div style={{ padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '6px', color: '#4b5563', fontSize: '0.875rem', textAlign: 'center' }}>
@@ -272,7 +277,7 @@ export default function AdminPage() {
               )}
             </div>
 
-            <div>
+            <div style={{ marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Key size={18} /> รหัสผ่าน (Password)
               </h3>
@@ -290,9 +295,19 @@ export default function AdminPage() {
                   style={{ flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
                 />
                 <button type="submit" style={{ backgroundColor: 'var(--primary)', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>
-                  บันทึก
+                  เปลี่ยนรหัสผ่าน
                 </button>
               </form>
+            </div>
+
+            <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
+              <button 
+                type="button" 
+                onClick={() => setSelectedUser(null)}
+                style={{ backgroundColor: '#10b981', color: 'white', padding: '0.6rem 2.5rem', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', transition: 'background-color 0.2s' }}
+              >
+                เสร็จสิ้น
+              </button>
             </div>
           </div>
         </div>

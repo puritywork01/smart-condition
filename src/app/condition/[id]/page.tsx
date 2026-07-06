@@ -200,14 +200,40 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
         />
       ).toBlob();
 
+      const filename = `Condition_${formData.idCode || 'Export'}.pdf`;
+      const file = new File([blob], filename, { type: 'application/pdf' });
+
+      // Web Share API for Mobile Devices (iOS Safari, Line, Chrome Mobile etc.)
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: filename,
+            text: `ดาวน์โหลด PDF สำหรับ ${formData.idCode || 'Condition'}`,
+          });
+          return;
+        } catch (shareError: any) {
+          console.error("Web Share failed, using fallback:", shareError);
+        }
+      }
+
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `Condition_${formData.idCode || 'Export'}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        // Mobile fallback: open PDF in window location
+        window.location.href = url;
+      } else {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+        }, 100);
+      }
       
     } catch (error: any) {
       alert("Export failed: " + error.message);
@@ -236,9 +262,9 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
             </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>ID Code</label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <input type="text" name="idCode" className={styles.input} style={{ flex: 1 }} value={formData.idCode} onChange={handleChange} />
-                <button type="button" onClick={handleSearchPart} style={{ padding: '0.5rem', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }} title="ดึงข้อมูลจาก Part Master">
+              <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+                <input type="text" name="idCode" className={styles.input} style={{ flex: 1, minWidth: 0 }} value={formData.idCode} onChange={handleChange} />
+                <button type="button" onClick={handleSearchPart} style={{ padding: '0.5rem', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0 }} title="ดึงข้อมูลจาก Part Master">
                   <Search size={18} />
                 </button>
               </div>

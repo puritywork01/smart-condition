@@ -134,7 +134,7 @@
 
 .resultSub {
   font-size: 0.875rem;
-  color: var(--secondary-hover);
+  color: var(--muted-foreground);
 }
 
 .badgeMaster {
@@ -157,6 +157,6 @@
 
 .noResults {
   text-align: center;
-  color: var(--secondary-hover);
+  color: var(--muted-foreground);
   padding: 2rem;
 }

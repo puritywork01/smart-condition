@@ -78,3 +78,18 @@ export async function deletePart(id: string) {
     return { success: false, error: error.message };
   }
 }
+
+export async function upsertParts(parts: any[]) {
+  try {
+    const { data, error } = await supabase
+      .from("part_master")
+      .upsert(parts, { onConflict: "id_code" })
+      .select();
+
+    if (error) throw new Error(error.message);
+    return { success: true, data };
+  } catch (error: any) {
+    console.error("Upsert Parts Error:", error);
+    return { success: false, error: error.message };
+  }
+}

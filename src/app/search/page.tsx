@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Search, ArrowLeft, ChevronRight, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -23,6 +23,26 @@ function SearchContent() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { hasPermission } = useAuth();
+  const [idSuggestions, setIdSuggestions] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("condition_records")
+          .select("id_code")
+          .order("id_code", { ascending: true });
+        
+        if (data) {
+          const uniqueCodes = Array.from(new Set(data.map(item => item.id_code).filter(Boolean)));
+          setIdSuggestions(uniqueCodes);
+        }
+      } catch (err) {
+        console.error("Error fetching suggestions:", err);
+      }
+    };
+    fetchSuggestions();
+  }, []);
 
   const handleDelete = async (id: string) => {
     if (!hasPermission("delete")) {
@@ -86,11 +106,17 @@ function SearchContent() {
               <input
                 type="text"
                 id="idCode"
+                list="idCodeSuggestions"
                 className={styles.input}
                 placeholder="e.g. ID-001"
                 value={formData.idCode}
                 onChange={(e) => setFormData({...formData, idCode: e.target.value})}
               />
+              <datalist id="idCodeSuggestions">
+                {idSuggestions.map((code) => (
+                  <option key={code} value={code} />
+                ))}
+              </datalist>
             </div>
 
             <div className={styles.formGroup}>

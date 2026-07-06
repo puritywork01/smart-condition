@@ -21,7 +21,7 @@
 
 .subtitle {
   font-size: 1.125rem;
-  color: var(--secondary-hover);
+  color: var(--muted-foreground);
 }
 
 .grid {

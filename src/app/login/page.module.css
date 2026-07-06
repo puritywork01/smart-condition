@@ -25,7 +25,7 @@
 
 .subtitle {
   font-size: 0.875rem;
-  color: var(--secondary-hover);
+  color: var(--muted-foreground);
   margin-bottom: 2rem;
 }
 
