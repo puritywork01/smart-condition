@@ -203,8 +203,10 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
       const filename = `Condition_${formData.idCode || 'Export'}.pdf`;
       const file = new File([blob], filename, { type: 'application/pdf' });
 
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
       // Web Share API for Mobile Devices (iOS Safari, Line, Chrome Mobile etc.)
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
           await navigator.share({
             files: [file],
@@ -218,7 +220,6 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
       }
 
       const url = URL.createObjectURL(blob);
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (isMobile) {
         // Mobile fallback: open PDF in window location
         window.location.href = url;
