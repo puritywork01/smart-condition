@@ -26,6 +26,7 @@ export async function fetchAnalysisData(masterId: string, startDate: string, end
       .from("condition_records")
       .select(`
         id,
+        date,
         clamping_units(*),
         injection_units(*),
         temperature_units(*),
@@ -103,7 +104,17 @@ export async function fetchAnalysisData(masterId: string, startDate: string, end
       return Math.abs(r.avg - r.master) > tol;
     });
 
-    return { success: true, results, masterRecord };
+    const uniqueDates = Array.from(new Set(massRecords.map((r: any) => r.date).filter(Boolean)));
+    const summary = {
+      masterId: masterRecord.id_code,
+      masterDate: masterRecord.date || new Date(masterRecord.created_at).toISOString().split('T')[0],
+      productionCount: massRecords.length,
+      daysFound: uniqueDates.length,
+      startDate: startDate,
+      endDate: endDate
+    };
+
+    return { success: true, results, masterRecord, summary };
   } catch (error: any) {
     console.error("Analysis Error:", error);
     return { success: false, error: error.message };

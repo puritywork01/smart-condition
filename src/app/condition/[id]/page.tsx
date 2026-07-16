@@ -220,21 +220,17 @@ export default function ConditionPage({ params }: { params: Promise<{ id: string
       }
 
       const url = URL.createObjectURL(blob);
-      if (isMobile) {
-        // Mobile fallback: open PDF in window location
-        window.location.href = url;
-      } else {
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-        }, 100);
-      }
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 100);
       
     } catch (error: any) {
       alert("Export failed: " + error.message);

@@ -17,6 +17,7 @@ export default function AnalysisPage() {
   });
 
   const [masterSuggestions, setMasterSuggestions] = useState<string[]>([]);
+  const [showMasterSuggestions, setShowMasterSuggestions] = useState(false);
 
   useEffect(() => {
     const fetchMasterSuggestions = async () => {
@@ -57,6 +58,7 @@ export default function AnalysisPage() {
   const [isAnalyzed, setIsAnalyzed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [masterRecordRaw, setMasterRecordRaw] = useState<any>(null);
+  const [analysisSummary, setAnalysisSummary] = useState<any>(null);
 
   const [results, setResults] = useState([
     { param: "MOLD CLOSE 1st Pressure", avg: 85, master: 80 },
@@ -74,6 +76,7 @@ export default function AnalysisPage() {
       if (res.success && res.results) {
         setResults(res.results);
         setMasterRecordRaw(res.masterRecord);
+        setAnalysisSummary(res.summary);
         setIsAnalyzed(true);
       } else {
         alert("Error fetching data: " + res.error);
@@ -122,22 +125,63 @@ export default function AnalysisPage() {
 
       <div className={styles.card}>
         <form className={styles.searchGrid} onSubmit={handleAnalyze}>
-          <div className={styles.formGroup}>
+          <div className={styles.formGroup} style={{ position: 'relative' }}>
             <label className={styles.label}>ค้นหา Master (ID)</label>
             <input 
               type="text" 
-              list="masterIdSuggestions"
+              autoComplete="off"
               className={styles.input} 
               placeholder="e.g. MAS-001"
               value={searchParams.masterId}
-              onChange={e => setSearchParams({...searchParams, masterId: e.target.value})}
+              onChange={e => {
+                setSearchParams({...searchParams, masterId: e.target.value});
+                setShowMasterSuggestions(true);
+              }}
+              onFocus={() => setShowMasterSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowMasterSuggestions(false), 200)}
               required
             />
-            <datalist id="masterIdSuggestions">
-              {masterSuggestions.map((code) => (
-                <option key={code} value={code} />
-              ))}
-            </datalist>
+            {showMasterSuggestions && masterSuggestions.filter(code => code.toLowerCase().includes(searchParams.masterId.toLowerCase())).length > 0 && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                backgroundColor: 'white',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                marginTop: '4px',
+                maxHeight: '200px',
+                overflowY: 'auto',
+                zIndex: 50,
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+              }}>
+                {masterSuggestions
+                  .filter(code => code.toLowerCase().includes(searchParams.masterId.toLowerCase()))
+                  .map((code) => (
+                    <div 
+                      key={code}
+                      style={{ 
+                        padding: '10px 12px', 
+                        cursor: 'pointer', 
+                        borderBottom: '1px solid #f1f5f9',
+                        color: '#334155',
+                        fontSize: '14px',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onMouseDown={(e) => {
+                         e.preventDefault();
+                         setSearchParams({...searchParams, masterId: code});
+                         setShowMasterSuggestions(false);
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                    >
+                      {code}
+                    </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -209,6 +253,29 @@ export default function AnalysisPage() {
 
       {isAnalyzed && (
         <div className={styles.resultsArea}>
+          {analysisSummary && (
+            <div style={{ backgroundColor: 'white', padding: '1.25rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ display: 'inline-block', width: '4px', height: '16px', backgroundColor: 'var(--primary)', borderRadius: '2px' }}></span>
+                ข้อมูลสรุปการวิเคราะห์ (Analysis Summary)
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                <div>
+                  <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem' }}>อ้างอิง Master ID</div>
+                  <div style={{ fontWeight: '600', color: '#1e293b' }}>{analysisSummary.masterId} <span style={{ fontSize: '0.8rem', fontWeight: 'normal', color: '#64748b' }}>(อัปเดต: {analysisSummary.masterDate})</span></div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem' }}>ช่วงเวลาที่นำมาวิเคราะห์</div>
+                  <div style={{ fontWeight: '600', color: '#1e293b' }}>{analysisSummary.startDate} <span style={{fontWeight: 'normal', margin: '0 4px', color: '#64748b'}}>ถึง</span> {analysisSummary.endDate}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem' }}>จำนวนข้อมูล Production ที่พบ</div>
+                  <div style={{ fontWeight: '600', color: '#0ea5e9' }}>{analysisSummary.productionCount} Records <span style={{ fontSize: '0.8rem', fontWeight: 'normal', color: '#64748b' }}>(จากทั้งหมด {analysisSummary.daysFound} วัน)</span></div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
               <thead>

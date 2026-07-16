@@ -24,6 +24,7 @@ function SearchContent() {
   const [isLoading, setIsLoading] = useState(false);
   const { hasPermission } = useAuth();
   const [idSuggestions, setIdSuggestions] = useState<string[]>([]);
+  const [showIdSuggestions, setShowIdSuggestions] = useState(false);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -101,22 +102,63 @@ function SearchContent() {
         
         <form onSubmit={handleSearch}>
           <div className={styles.searchGrid}>
-            <div className={styles.formGroup}>
+            <div className={styles.formGroup} style={{ position: 'relative' }}>
               <label className={styles.label} htmlFor="idCode">ค้นหา ID Code</label>
               <input
                 type="text"
                 id="idCode"
-                list="idCodeSuggestions"
+                autoComplete="off"
                 className={styles.input}
                 placeholder="e.g. ID-001"
                 value={formData.idCode}
-                onChange={(e) => setFormData({...formData, idCode: e.target.value})}
+                onChange={(e) => {
+                  setFormData({...formData, idCode: e.target.value});
+                  setShowIdSuggestions(true);
+                }}
+                onFocus={() => setShowIdSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowIdSuggestions(false), 200)}
               />
-              <datalist id="idCodeSuggestions">
-                {idSuggestions.map((code) => (
-                  <option key={code} value={code} />
-                ))}
-              </datalist>
+              {showIdSuggestions && idSuggestions.filter(code => code.toLowerCase().includes(formData.idCode.toLowerCase())).length > 0 && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'white',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px',
+                  marginTop: '4px',
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                  zIndex: 50,
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                }}>
+                  {idSuggestions
+                    .filter(code => code.toLowerCase().includes(formData.idCode.toLowerCase()))
+                    .map((code) => (
+                      <div 
+                        key={code}
+                        style={{ 
+                          padding: '10px 12px', 
+                          cursor: 'pointer', 
+                          borderBottom: '1px solid #f1f5f9',
+                          color: '#334155',
+                          fontSize: '14px',
+                          transition: 'background-color 0.2s'
+                        }}
+                        onMouseDown={(e) => {
+                           e.preventDefault(); // Prevent input onBlur from firing immediately
+                           setFormData({...formData, idCode: code});
+                           setShowIdSuggestions(false);
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                      >
+                        {code}
+                      </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className={styles.formGroup}>

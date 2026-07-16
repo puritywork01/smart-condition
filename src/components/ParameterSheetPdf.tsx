@@ -61,8 +61,8 @@ const s = StyleSheet.create({
 // ─── helpers ─────────────────────────────────────────────────────────────────
 type CellProps = { w?: number; bg?: string; style?: any; children?: any };
 const Cell = ({ w = 1, bg, style, children }: CellProps) => (
-  <View style={[s.cell, { flex: w, flexBasis: 0, backgroundColor: bg ?? C.white }, style]}>
-    {children}
+  <View style={[s.cell, { flexGrow: w, flexShrink: 0, flexBasis: '0%', backgroundColor: bg ?? C.white }, style]}>
+    {children === undefined || children === null || children === '' ? <Text style={s.lbl}> </Text> : children}
   </View>
 );
 const LCell = ({ w = 1, bg, children }: CellProps) => (
